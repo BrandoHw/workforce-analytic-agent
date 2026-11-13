@@ -1,0 +1,83 @@
+{
+  "generated": "2026-11-13 13:35:39",
+  "model": "gemini-2.5-flash",
+  "judge_model": "gemini-2.5-flash",
+  "summary": {
+    "cases": 1,
+    "passed": 1,
+    "pass_rate": 1.0,
+    "average_score": 4.0,
+    "agent_cost_usd": 0.03115942,
+    "judge_cost_usd": 0.0027826,
+    "pass_score": 4
+  },
+  "results": [
+    {
+      "id": "q5_cover_forklift_shift",
+      "category": "planning",
+      "question": "Who could cover the Friday afternoon forklift shift?",
+      "reference": "The open slot is on SHF_010 (Fri 2026-11-20, 14:00-22:00, KL, Forklift; 1 of 2 filled by EMP_002). There is no fully compliant replacement. EMP_006 has a valid forklift certificate and is free on Friday but is already on SHF_011 (Sat 2026-11-21 06:00), which would leave only 8 hours of rest after a 22:00 finish, below the 11-hour minimum. EMP_003's forklift certificate expired on 2026-11-18, EMP_008 is on approved leave on 2026-11-20, and EMP_002 is already assigned and at 48 hours.",
+      "answer": "I cannot propose a fully compliant candidate for the Friday, 2026-11-20 afternoon forklift shift (SHF_010).\n\nThe closest option is employee EMP_006, but assigning this shift would breach the minimum rest period requirement as stated in the Labor Compliance Handbook.\n\n**Rejected Candidate:**\n\n*   **Employee ID:** EMP_006\n*   **Reason for rejection:** Rest period violation. The proposed shift ends on 2026-11-20 at 22:00, and EMP_006 has an existing shift scheduled for 2026-11-21 starting at 06:00. This provides only 8 hours of rest, which is less than the mandatory 11 hours required between shifts (Labor Compliance Handbook, Section 3).\n*   **Planned hours after assignment:** 24 hours. (This would be compliant with their 40 max weekly hours).\n*   **Other eligibility checks (all compliant):**\n    *   Has the Forklift Operator skill and valid certification (until 2027-06-30).\n    *   No approved time off on 2026-11-20.\n    *   Available on Friday (no standing UNAVAILABLE constraint).\n    *   No other shifts scheduled on 2026-11-20.\n    *   No consecutive working day violation.\n\nThis is a proposal for a human to apply; I cannot write to the database.",
+      "delegations": [
+        "assignment_planner"
+      ],
+      "mcp_tools": [
+        "mcp_list_tables",
+        "mcp_describe_table",
+        "mcp_describe_table",
+        "mcp_describe_table",
+        "mcp_describe_table",
+        "mcp_describe_table",
+        "mcp_describe_table",
+        "mcp_describe_table",
+        "mcp_describe_table",
+        "mcp_list_policies",
+        "mcp_read_policy",
+        "mcp_read_policy",
+        "mcp_read_policy",
+        "mcp_read_query",
+        "mcp_read_query",
+        "mcp_read_query"
+      ],
+      "blocked": false,
+      "judge_score": 4,
+      "judge_rationale": "The candidate correctly identifies that there is no fully compliant candidate and correctly details why EMP_006 is the closest but still non-compliant option. However, it omits the reasons for rejecting other potential candidates (EMP_003, EMP_008, and EMP_002) that are present in the reference answer.",
+      "judge_missing_or_wrong": "The candidate does not mention why EMP_003, EMP_008, and EMP_002 cannot cover the shift, which is included in the reference.",
+      "checks": [
+        {
+          "name": "no runtime error",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "delegated to assignment_planner",
+          "ok": true,
+          "detail": "called=['assignment_planner']"
+        },
+        {
+          "name": "used mcp_read_query",
+          "ok": true,
+          "detail": "used=['mcp_describe_table', 'mcp_list_policies', 'mcp_list_tables', 'mcp_read_policy', 'mcp_read_query']"
+        },
+        {
+          "name": "answer contains 'EMP_006'",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "answer contains 'rest'",
+          "ok": true,
+          "detail": ""
+        }
+      ],
+      "checks_passed": true,
+      "passed": true,
+      "agent_cost_usd": 0.03115942,
+      "judge_cost_usd": 0.0027826,
+      "model_calls": 10,
+      "prompt_tokens": 60152,
+      "completion_tokens": 9931,
+      "elapsed_s": 73.8
+    }
+  ]
+}
