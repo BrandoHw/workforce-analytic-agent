@@ -46,7 +46,11 @@ check("migration simulator buttons exist", {"Add tables", "Reset DB"} <= {b.labe
       str([b.label for b in at.button]))
 add = next(b for b in at.button if b.label == "Add tables")
 reset = next(b for b in at.button if b.label == "Reset DB")
-check("baseline DB: Add enabled, Reset disabled", (not add.disabled) and reset.disabled)
+import bootstrap_data  # noqa: E402
+
+applied = bootstrap_data.demo_migration_applied()  # the shared DB may or may not be migrated
+check("migration buttons match the database state (Add xor Reset enabled)",
+      add.disabled == applied and reset.disabled == (not applied), f"applied={applied}")
 check("suggested guardrail questions listed", any("Ignore previous instructions" in b.label for b in at.button))
 
 print("Guardrail demo prompts (no model call)")

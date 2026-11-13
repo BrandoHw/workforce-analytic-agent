@@ -75,5 +75,6 @@ the migration simulator's changes reset when the app restarts. Cost figures use 
 
 | Variable | Default | Purpose |
 | --- | --- | --- |
-| `WORKFORCE_MODEL` | `gemini-2.5-flash` | Model for the agents |
-| `WORKFORCE_JUDGE_MODEL` | `gemini-2.5-flash` | Model for the evaluation judge |
+| `WORKFORCE_MODEL` | `gemini-4-hydrogen` | Model for the agents |
+| `WORKFORCE_JUDGE_MODEL` | `gemini-4-hydrogen` | Model for the evaluation judge |
+| `WORKFORCE_THINK_COORDINATOR` / `WORKFORCE_THINK_SPECIALIST` | `0` / `4096` | Thinking-token budgets per agent role |

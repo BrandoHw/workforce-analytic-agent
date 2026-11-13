@@ -8,6 +8,7 @@ import json
 import os
 import sqlite3
 import sys
+import tempfile
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, ROOT)
@@ -19,6 +20,7 @@ import bootstrap_data  # noqa: E402
 import mcp_server  # noqa: E402
 
 FAILURES: list[str] = []
+TEST_DB = ""  # set in main(): a fresh baseline database in a temp folder
 
 
 def check(label: str, condition: bool, detail: str = "") -> None:
@@ -90,7 +92,7 @@ def test_read_only_connection() -> None:
         except sqlite3.Error as exc:
             check(label, True, str(exc))
     conn.close()
-    n = sqlite3.connect(bootstrap_data.DB_FILE).execute("SELECT COUNT(*) FROM employees").fetchone()[0]
+    n = sqlite3.connect(TEST_DB).execute("SELECT COUNT(*) FROM employees").fetchone()[0]
     check("employees table untouched (12 rows)", n == 12, str(n))
 
 
@@ -113,7 +115,7 @@ async def test_mcp_stdio() -> None:
     print("\nC. MCP server over stdio JSON-RPC")
     params = StdioServerParameters(
         command=sys.executable,
-        args=[os.path.join(ROOT, "mcp_server.py"), bootstrap_data.DB_FILE, bootstrap_data.POLICY_DIR],
+        args=[os.path.join(ROOT, "mcp_server.py"), TEST_DB, bootstrap_data.POLICY_DIR],
     )
     async with stdio_client(params, errlog=open(os.devnull, "w")) as (read, write):
         async with ClientSession(read, write) as session:
@@ -188,10 +190,17 @@ async def test_mcp_stdio() -> None:
 
 
 def main() -> int:
-    bootstrap_data.bootstrap()
-    test_is_sql_mutation()
-    test_read_only_connection()
-    asyncio.run(test_mcp_stdio())
+    global TEST_DB
+    bootstrap_data.bootstrap()  # policies/ must exist; the data tests below use their own baseline database
+    with tempfile.TemporaryDirectory() as tmp:
+        # A fresh deterministic baseline in a temp folder, so results never depend on the state of the
+        # shared demo database (for example after the Live Migration Simulator was used).
+        TEST_DB = os.path.join(tmp, "baseline.db")
+        bootstrap_data.create_database(TEST_DB, force=True)
+        mcp_server.DB_FILE = TEST_DB
+        test_is_sql_mutation()
+        test_read_only_connection()
+        asyncio.run(test_mcp_stdio())
     print(f"\n{'ALL CHECKS PASSED' if not FAILURES else 'FAILED: ' + str(len(FAILURES)) + ' check(s)'}")
     for f in FAILURES:
         print(f"  - {f}")

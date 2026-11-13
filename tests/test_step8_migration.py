@@ -10,7 +10,6 @@ Run:  .\\.venv\\Scripts\\python.exe tests\\test_step8_migration.py
 import asyncio
 import json
 import os
-import shutil
 import sqlite3
 import sys
 import tempfile
@@ -100,7 +99,8 @@ def main() -> int:
     real_before = os.path.getmtime(bootstrap_data.DB_FILE)
     with tempfile.TemporaryDirectory() as tmp:
         db_copy = os.path.join(tmp, "enterprise_copy.db")
-        shutil.copy(bootstrap_data.DB_FILE, db_copy)
+        # Fresh deterministic baseline (not a copy of the shared DB, which may already be migrated).
+        bootstrap_data.create_database(db_copy, force=True)
         asyncio.run(scenario(db_copy))
     check("the real enterprise.db was never modified", os.path.getmtime(bootstrap_data.DB_FILE) == real_before)
     print(f"\n{'ALL CHECKS PASSED' if not FAILURES else 'FAILED: ' + str(len(FAILURES)) + ' check(s)'}")

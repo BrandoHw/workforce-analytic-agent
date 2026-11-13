@@ -2,8 +2,9 @@
 import os
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-MODEL = os.environ.get("WORKFORCE_MODEL", "gemini-2.5-flash")
-JUDGE_MODEL = os.environ.get("WORKFORCE_JUDGE_MODEL", "gemini-2.5-flash")
+DEFAULT_MODEL = "gemini-4-hydrogen"
+MODEL = os.environ.get("WORKFORCE_MODEL", DEFAULT_MODEL)
+JUDGE_MODEL = os.environ.get("WORKFORCE_JUDGE_MODEL", DEFAULT_MODEL)
 MAX_LLM_CALLS_PER_TURN = 25  # hard ceiling so a looping agent cannot run up the bill
 
 # Gemini 2.5 "thinking" tokens bill as output and dominate latency. Cap them per agent role.

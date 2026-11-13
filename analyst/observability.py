@@ -21,11 +21,14 @@ logger = logging.getLogger("workforce_analyst.usage")
 
 PRICING_USD_PER_1M = {
     # model prefix:          input, output (thinking tokens bill as output), cached input
+    # gemini-4-hydrogen: Gemini API paid tier, flat across the 1M context (aistudio.google.com/docs/pricing)
+    "gemini-4-hydrogen": {"input": 1.50, "output": 7.50, "cached_input": 0.075},
+    # The 2.5 rates below are remembered list prices and were not re-verified.
     "gemini-2.5-flash-lite": {"input": 0.10, "output": 0.40, "cached_input": 0.01},
     "gemini-2.5-flash": {"input": 0.30, "output": 2.50, "cached_input": 0.03},
     "gemini-2.5-pro": {"input": 1.25, "output": 10.00, "cached_input": 0.125},
 }
-DEFAULT_MODEL = "gemini-2.5-flash"
+DEFAULT_MODEL = "gemini-4-hydrogen"
 
 LOG_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "logs")
 USAGE_LOG_FILE = os.path.join(LOG_DIR, "usage.jsonl")
